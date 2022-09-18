@@ -54,5 +54,9 @@ RSpec.describe 'dish show page' do
     it 'displays the name of the dish chef' do
       expect(page).to have_content(charlie.name)
     end
+
+    it 'displays the total calorie count for the dish' do
+      expect(page).to have_content(pineapple_souffle.total_calories)
+    end
   end
 end

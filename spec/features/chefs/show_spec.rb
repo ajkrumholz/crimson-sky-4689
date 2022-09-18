@@ -1,15 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Chef, type: :model do
-
-  describe "validations" do
-    it {should validate_presence_of :name}
-  end
-
-  describe "relationships" do
-    it {should have_many :dishes}
-  end
-
+RSpec.describe 'chef show page' do
+  # As a visitor
+  # When I visit a chef's show page
+  # I see the name of that chef
+  # And I see a link to view a list of all ingredients that this chef uses in their dishes.
+  # When I click on that link
+  # I'm taken to a chef's ingredient index page
+  # and I can see a unique list of names of all the ingredients that this chef uses.
   let!(:charlie) { Chef.create!(name: 'Charlie Akins') }
   let!(:baron) { Chef.create!(name: 'Baron von Cookenmann') }
 
@@ -40,15 +38,37 @@ RSpec.describe Chef, type: :model do
     sausage.ingredients << pork
     sausage.ingredients << chilis
     sausage.ingredients << sugar
+
+    visit chef_path(charlie)
   end
 
-  describe 'instance methods' do
+  describe 'when I visit a chef show page' do
+    it 'displays the name of the chef' do
 
-    describe '#ingredients' do
-      it 'returns a distinct array of ingredients the chef uses' do
-        expect(charlie.ingredients).to include(flour, eggs, butter, sugar, pineapple, pork)
-        expect(charlie.ingredients).to_not include(chilis)
+      expect(page).to have_content(charlie.name)
+
+      expect(page).to_not have_content(baron.name)
+    end
+
+    it 'displays a link to view all ingredients used by chef' do
+      expect(page).to have_link "#{charlie.name}'s Ingredients"
+    end
+
+    describe 'when I visit the ingredient index' do
+      it 'displays a unique list of names of all ingredients used by chef' do
+        click_on "#{charlie.name}'s Ingredients"
+
+        expect(current_path).to eq(chef_ingredients_path(charlie))
+
+        expect(page).to have_content(flour.name)
+        expect(page).to have_content(eggs.name)
+        expect(page).to have_content(pork.name)
+        expect(page).to have_content(sugar.name)
+        expect(page).to have_content(butter.name)
+
+        expect(page).to_not have_content(chilis.name)
       end
     end
   end
+
 end

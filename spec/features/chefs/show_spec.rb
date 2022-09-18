@@ -13,7 +13,12 @@ RSpec.describe 'chef show page' do
 
   let!(:pineapple_souffle) { charlie.dishes.create!(name: "Pineapple Souffle", description: "A whirlwind of pineapple scented exultation") }
   let!(:pork_pie) { charlie.dishes.create!(name: "Pork Pie", description: "A tumult of tummy titillating textures") }
+  let!(:pancakes) { charlie.dishes.create!(name: "Just Pancakes", description: "Unbelievably unheralded UFOs of uhhmmmm that's good") }
+  let!(:bread_pudding) { charlie.dishes.create!(name: "Bread Pudding", description: "A piping pot of potent popularity") }
+  let!(:sconezilla) { charlie.dishes.create!(name: "Sconezilla", description: "A ground-breaking gargantuan of grandiose gateau-craft") }
   let!(:sausage) { baron.dishes.create!(name: "Handmade Chorizo", description: "A searing symphony of sumptuous scrumption") }
+
+      
 
   let!(:flour) { Ingredient.create!(name: "Flour", calories: 500) }
   let!(:eggs) { Ingredient.create!(name: "Eggs", calories: 250) }
@@ -35,6 +40,16 @@ RSpec.describe 'chef show page' do
     pork_pie.ingredients << butter
     pork_pie.ingredients << pork
 
+    pancakes.ingredients << flour 
+    pancakes.ingredients << eggs 
+    pancakes.ingredients << sugar
+
+    bread_pudding.ingredients << flour 
+    bread_pudding.ingredients << eggs 
+
+    sconezilla.ingredients << flour 
+    sconezilla.ingredients << butter 
+
     sausage.ingredients << pork
     sausage.ingredients << chilis
     sausage.ingredients << sugar
@@ -52,6 +67,13 @@ RSpec.describe 'chef show page' do
 
     it 'displays a link to view all ingredients used by chef' do
       expect(page).to have_link "#{charlie.name}'s Ingredients"
+    end
+
+    it 'displays a list of the top 3 ingredients used by the chef, by number of dishes they appear in' do
+      within("#top-3") do
+        expect(flour.name).to appear_before(eggs.name)
+        expect(eggs.name).to appear_before(butter.name)
+      end
     end
 
     describe 'when I visit the ingredient index' do
